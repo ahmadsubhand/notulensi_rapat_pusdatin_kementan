@@ -18,7 +18,10 @@ export default function Dokumentasi({ form } : SectionProps) {
   
   const addRow = () => {
     append({
-      nama: ""
+      url: "",
+      width: 1,
+      height: 1,
+      ratio: 1
     })
   }
 
