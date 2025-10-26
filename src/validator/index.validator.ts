@@ -16,15 +16,13 @@ export const notulensiSchema = z.object({
     .nonempty('Waktu mulai wajib diisi.')
     .regex(/^(?:[01]\d|2[0-3])\.[0-5]\d$/, 'Tidak valid (contoh: 09.00)'),
 
-  waktu_selesai: z.preprocess(
-    val => (val === '' ? null : val),
-    z
-      .string()
-      .trim()
-      .regex(/^(?:[01]\d|2[0-3])\.[0-5]\d$/, 'Tidak valid (contoh: 10.30)')
-      .nullable()
-      .optional()
-  ),
+  waktu_selesai: z
+    .string()
+    .trim()
+    .regex(/^$|^(?:[01]\d|2[0-3])\.[0-5]\d$/, 'Tidak valid (contoh: 10.30)')
+    .transform((val) => (val === '' ? null : val))
+    .nullable()
+    .optional(),
 
   tempat: z
     .string()
