@@ -9,6 +9,10 @@ import { Input } from "@/components/ui/input";
 import { DatePicker } from "@/components/date-picker";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { defaultValues } from "@/lib/default-values";
+import { STORAGE_KEY } from "@/lib/storage-key";
+import { MoveLeft, RefreshCcw } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 export default function Notulen({ form } : SectionProps) {
   const [uploading, setUploading] = useState(false);
@@ -33,7 +37,10 @@ export default function Notulen({ form } : SectionProps) {
     }
   };
 
-  // const [isActive, setIsActive] = useState(false);
+  const handleClear = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    form.reset(defaultValues);
+  };
 
   return (
     <Card>
@@ -98,7 +105,27 @@ export default function Notulen({ form } : SectionProps) {
         )}
 
       </CardContent>
-      <CardFooter>
+      <CardFooter className="gap-4">
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button type={'button'} variant={'outline'}>
+              <RefreshCcw /> Atur ulang seluruh form
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Formulir akan diatur ulang, seluruh kolom yang sudah diisi akan dihapus dan dikembalikan ke kondisi semula. Tindakan ini tidak dapat dikembalikan.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel><MoveLeft />Batal</AlertDialogCancel>
+              <AlertDialogAction onClick={handleClear}>Atur ulang <RefreshCcw /></AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        
         <Button type={'submit'}>
           Tampilkan pdf
         </Button>

@@ -15,10 +15,11 @@ import Pelaksanaan from "./pelaksanaan";
 import Isi from "./isi";
 import Dokumentasi from "./dokumentasi";
 import Notulen from "./notulen";
-import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { defaultValues } from "@/lib/default-values";
+import { STORAGE_KEY } from "@/lib/storage-key";
 
 export default function Notulensi() {
   // Form
@@ -26,23 +27,7 @@ export default function Notulensi() {
   const form = useForm<notulensiType>({
     resolver: zodResolver(notulensiSchema),
     mode: "onChange",
-    defaultValues: {
-      hariTanggal: dayjs().format('YYYY-MM-DD'),
-      waktu_mulai: dayjs().format('HH.mm'),
-      waktu_selesai: '',
-      tempat: "Ruang Rapat A Pusdatin",
-      pimpinan: "",
-      notulen: "",
-      peserta: [],
-      agenda: "",
-      isi: "",
-      dokumentasi: [],
-      isUseNotulis: false,
-      notulis: "",
-      kota: "Jakarta",
-      tanggal: dayjs().format('YYYY-MM-DD'),
-      tanda_tangan: '',
-    },
+    defaultValues: defaultValues,
   });
 
   const onSubmit = (values: notulensiType) => {
@@ -70,6 +55,33 @@ export default function Notulensi() {
       );
     }
   }
+
+  // Backup Local Storage
+
+  const { watch, reset } = form;
+
+  useEffect(() => {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData) as notulensiType;
+        reset(parsed);
+        console.log("Form data loaded from localStorage");
+      } catch (err) {
+        console.log("Error parsing saved data: ", err);
+      }
+    }
+  }, [reset])
+
+  useEffect(() => {
+    const subscription = watch((values) => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(values));
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch])
+
+  // Component 
 
   const menus = [
     { value: 'pelaksanaan', label: 'Pelaksanaan', form: <Pelaksanaan form={form} /> },
