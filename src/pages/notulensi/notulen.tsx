@@ -7,10 +7,12 @@ import { useState } from "react";
 import { handleImageUpload } from "@/lib/tiptap-utils";
 import { Input } from "@/components/ui/input";
 import { DatePicker } from "@/components/date-picker";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 export default function Notulen({ form } : SectionProps) {
   const [uploading, setUploading] = useState(false);
-  const [preview, setPreview] = useState<string | undefined>(form.watch('tanda_tangan'));
+  const [preview, setPreview] = useState<string | null | undefined>(form.watch('tanda_tangan'));
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     
@@ -31,55 +33,70 @@ export default function Notulen({ form } : SectionProps) {
     }
   };
 
+  // const [isActive, setIsActive] = useState(false);
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Notulis</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <InputField 
-          form={form}
-          inputName="notulis"
-          inputLabel="Nama"
-          inputPlaceholder="Nama notulis rapat"
-          isRequired
-        />
-        <InputField 
-          form={form}
-          inputName="kota"
-          inputLabel="Kota"
-          inputPlaceholder="Nama kota tempat ditandatangani"
-          isRequired
-        />
-        <DatePicker
-          form={form}
-          inputName="tanggal"
-          inputLabel="Tanggal"
-          inputPlaceholder="Tanggal ditandatangani"
-          isRequired
-        />
-        <FormField
-          control={form.control}
-          name={'tanda_tangan'}
-          render={() => (
-            <FormItem className="flex-1 flex flex-col gap-4">
-              <FormLabel>Tanda Tangan <span className='text-red-500'>*</span></FormLabel>
-              <FormControl>
-                <Input 
-                  type={'file'}
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  disabled={uploading}
-                />
-              </FormControl>
-              {uploading && <p>Mengupload...</p>}
-              {preview && (
-                <img src={preview} alt="Preview" className="mt-2 h-30 object-contain object-left" />
+        <div className="flex flex-row gap-4 mb-4">
+          <Switch 
+            id="active" 
+            onCheckedChange={(checked) => form.setValue('isUseNotulis', checked)} 
+            checked={form.watch('isUseNotulis')} />
+          <Label htmlFor="active">Apakah perlu tanda tangan notulis?</Label>
+        </div>
+
+        {form.watch('isUseNotulis') && (
+          <>
+            <InputField 
+              form={form}
+              inputName="notulis"
+              inputLabel="Nama"
+              inputPlaceholder="Nama notulis rapat"
+              isRequired
+            />
+            <InputField 
+              form={form}
+              inputName="kota"
+              inputLabel="Kota"
+              inputPlaceholder="Nama kota tempat ditandatangani"
+              isRequired
+            />
+            <DatePicker
+              form={form}
+              inputName="tanggal"
+              inputLabel="Tanggal"
+              inputPlaceholder="Tanggal ditandatangani"
+              isRequired
+            />
+            <FormField
+              control={form.control}
+              name={'tanda_tangan'}
+              render={() => (
+                <FormItem className="flex-1 flex flex-col gap-4">
+                  <FormLabel>Tanda Tangan <span className='text-red-500'>*</span></FormLabel>
+                  <FormControl>
+                    <Input 
+                      type={'file'}
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      disabled={uploading}
+                    />
+                  </FormControl>
+                  {uploading && <p>Mengupload...</p>}
+                  {preview && (
+                    <img src={preview} alt="Preview" className="mt-2 h-30 object-contain object-left" />
+                  )}
+                  <FormMessage />
+                </FormItem>
               )}
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            />
+          </>
+        )}
+
       </CardContent>
       <CardFooter>
         <Button type={'submit'}>

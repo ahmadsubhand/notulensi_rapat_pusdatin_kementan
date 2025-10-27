@@ -16,7 +16,7 @@ import Isi from "./isi";
 import Dokumentasi from "./dokumentasi";
 import Notulen from "./notulen";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -37,6 +37,7 @@ export default function Notulensi() {
       agenda: "",
       isi: "",
       dokumentasi: [],
+      isUseNotulis: false,
       notulis: "",
       kota: "Jakarta",
       tanggal: dayjs().format('YYYY-MM-DD'),
@@ -93,6 +94,7 @@ export default function Notulensi() {
 
     dokumentasi: menus[3].value,
 
+    isUseNotulis: menus[4].value,
     notulis: menus[4].value,
     tanggal: menus[4].value,
     kota: menus[4].value,
@@ -120,9 +122,9 @@ export default function Notulensi() {
   // }, [isi])
 
   // const dokumentasi = form.watch('dokumentasi');
-  // useEffect(() => {
-  //   console.log(form.formState.errors);
-  // }, [form.formState.errors])
+  useEffect(() => {
+    console.log(form.formState.errors);
+  }, [form.formState.errors])
 
   return (
     <div className="w-full">

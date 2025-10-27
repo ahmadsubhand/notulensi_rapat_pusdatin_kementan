@@ -152,16 +152,17 @@ export default function Preview({
           </View>
 
         </View>
-
-        <View wrap={false} style={{ 
-          position: 'absolute', bottom: 0, right: 0, 
-          padding: '50px 65px', fontSize: '11px', lineHeight: '18px'
-        }}>
-          <Text style={[styles.textRight]}>{data.kota}, {dayjs(data.tanggal).format('DD MMMM YYYY')}</Text>
-          <Text style={[styles.textRight]}>Notulis,</Text>
-          <Image style={{ height: '70px', objectFit: 'contain', objectPosition: 'right' }} src={data.tanda_tangan} />;
-          <Text style={[styles.textRight, { marginTop: '4px' }]}>{data.notulis}</Text>
-        </View>
+        
+        {data.isUseNotulis && data.kota && data.tanggal && data.tanda_tangan && data.notulis && (
+          <View wrap={false} style={{ 
+            paddingVertical: '50px', fontSize: '11px', lineHeight: '18px', textAlign: 'right'
+          }}>
+            <Text style={[styles.textRight]}>{data.kota}, {dayjs(data.tanggal).format('DD MMMM YYYY')}</Text>
+            <Text style={[styles.textRight]}>Notulis,</Text>
+            <Image style={{ height: '70px', objectFit: 'contain', objectPosition: 'right' }} src={data.tanda_tangan} />;
+            <Text style={[styles.textRight, { marginTop: '4px' }]}>{data.notulis}</Text>
+          </View>
+        )}
       </Page>
       <Page size={'A4'} style={[styles.page]}>
         <Text style={[styles.heading, styles.heading1, styles.textCenter]}>Dokumentasi</Text>

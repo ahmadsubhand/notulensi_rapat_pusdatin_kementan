@@ -68,27 +68,45 @@ export const notulensiSchema = z.object({
     })
   ).nonempty('Minimal satu foto dokumentasi rapat'),
 
+  isUseNotulis: z.boolean(),
+
   notulis: z
     .string()
     .trim()
-    .nonempty('Notulen wajib diisi.')
-    .max(100, 'Notulen terlalu panjang (maks 100 karakter).'),
+    .max(100, 'Notulen terlalu panjang (maks 100 karakter).')
+    .transform((val) => (val === '' ? null : val))
+    .nullable()
+    .optional(),
 
   tanggal: z.string({ message: 'Tanggal tidak valid' })
     .nonempty('Tanggal ditandatangani wajib diisi.')
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Tanggal tidak valid")
+    .regex(/^$|^\d{4}-\d{2}-\d{2}$/, "Tanggal tidak valid")
     .refine(
-        (value) => !isNaN(Date.parse(value)),
-        "Tanggal tidak valid"
-    ),
+      (value) => value === "" || !isNaN(Date.parse(value)),
+      "Tanggal tidak valid"
+    )
+    .transform((val) => (val === '' ? null : val))
+    .nullable()
+    .optional(),
 
   kota: z
     .string()
     .trim()
-    .nonempty('Nama kota tempat ditandatangani wajib diisi.')
-    .max(20, 'Nama kota terlalu panjang (maks 20 karakter).'),
+    .max(20, 'Nama kota terlalu panjang (maks 20 karakter).')
+    .transform((val) => (val === '' ? null : val))
+    .nullable()
+    .optional(),
 
-  tanda_tangan: z.url('Foto dokumentasi rapat wajib diunggah').nonempty('Foto tanda tangan notulen wajib diunggah'),
+  tanda_tangan: z
+    .string()
+    .trim()
+    .refine(
+      (val) => val === "" || /^https?:\/\/.+/.test(val),
+      "Foto tanda tangan notulen wajib diunggah"
+    )
+    .transform((val) => (val === '' ? null : val))
+    .nullable()
+    .optional(),
 })
 
 export type notulensiType = z.infer<typeof notulensiSchema>;
