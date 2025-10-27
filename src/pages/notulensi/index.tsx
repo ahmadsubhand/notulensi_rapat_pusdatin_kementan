@@ -134,9 +134,9 @@ export default function Notulensi() {
   // }, [isi])
 
   // const dokumentasi = form.watch('dokumentasi');
-  useEffect(() => {
-    console.log(form.formState.errors);
-  }, [form.formState.errors])
+  // useEffect(() => {
+  //   console.log(form.formState.errors);
+  // }, [form.formState.errors])
 
   return (
     <div className="w-full">
