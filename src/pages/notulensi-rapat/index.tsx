@@ -2,13 +2,12 @@ import { PDFViewer } from "@react-pdf/renderer";
 import Preview from "./preview";
 import { useForm, type FieldErrors } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
-import { notulensiSchema } from "@/validator/index.validator";
-import type { notulensiType } from "@/validator/index.validator";
+import { notulensiSchema } from "@/validator/notulensi.validator";
+import type { notulensiType } from "@/validator/notulensi.validator";
 import { createRoot } from "react-dom/client";
 import { Form } from "@/components/ui/form";
 import { Editor } from "@tiptap/react";
 import extensionEditor from "@/components/tiptap-templates/simple/extension-editor";
-import AppLogo from "@/components/app-logo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Peserta from "./peserta";
 import Pelaksanaan from "./pelaksanaan";
@@ -18,8 +17,9 @@ import Notulen from "./notulen";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { defaultValues } from "@/lib/default-values";
-import { STORAGE_KEY } from "@/lib/storage-key";
+import { notulensiRapat } from "@/lib/default-values";
+import { NOTULENSI_KEY } from "@/lib/storage-key";
+import AppLayout from "@/layout/app-layout";
 
 export default function Notulensi() {
   // Form
@@ -27,7 +27,7 @@ export default function Notulensi() {
   const form = useForm<notulensiType>({
     resolver: zodResolver(notulensiSchema),
     mode: "onChange",
-    defaultValues: defaultValues,
+    defaultValues: notulensiRapat,
   });
 
   const onSubmit = (values: notulensiType) => {
@@ -61,7 +61,7 @@ export default function Notulensi() {
   const { watch, reset } = form;
 
   useEffect(() => {
-    const savedData = localStorage.getItem(STORAGE_KEY);
+    const savedData = localStorage.getItem(NOTULENSI_KEY);
     if (savedData) {
       try {
         const parsed = JSON.parse(savedData) as notulensiType;
@@ -75,7 +75,7 @@ export default function Notulensi() {
 
   useEffect(() => {
     const subscription = watch((values) => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(values));
+      localStorage.setItem(NOTULENSI_KEY, JSON.stringify(values));
     });
 
     return () => subscription.unsubscribe();
@@ -139,16 +139,8 @@ export default function Notulensi() {
   // }, [form.formState.errors])
 
   return (
-    <div className="w-full">
-      {/* Form Input */}
-      <div className="flex gap-2 m-6">
-        <AppLogo fullText={true} />
-      </div>
-
-      <div className="flex flex-col justify-center items-center gap-6">
-        <h1 className="font-bold text-xl">Notulensi Rapat Pusdatin</h1>
-
-        <Form {...form}>
+    <AppLayout h1Content="Notulensi Rapat Pusdatin">
+      <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit, onInvalid)}
           >
@@ -187,7 +179,6 @@ export default function Notulensi() {
             </Tabs>
           </form>
         </Form>
-      </div>
-    </div>
+    </AppLayout>    
   )
 }

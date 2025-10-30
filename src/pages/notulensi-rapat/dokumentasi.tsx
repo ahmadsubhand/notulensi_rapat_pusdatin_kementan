@@ -5,12 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { handleImageUpload } from "@/lib/tiptap-utils";
 import type { SectionProps } from "@/types";
-import type { notulensiType } from "@/validator/index.validator";
+import type { notulensiType } from "@/validator/notulensi.validator";
 import { Plus, Trash } from "lucide-react";
 import { useState } from "react";
 import { useFieldArray } from "react-hook-form";
 
-export default function Dokumentasi({ form } : SectionProps) {
+export default function Dokumentasi({ form } : SectionProps<notulensiType>) {
   const { fields, append, remove } = useFieldArray({
       control: form.control,
       name: 'dokumentasi'

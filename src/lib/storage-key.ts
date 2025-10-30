@@ -1,1 +1,2 @@
-export const STORAGE_KEY = "notulensiFormData";
+export const NOTULENSI_KEY = "notulensiFormData";
+export const PERJALANAN_KEY = "perjalananFormData";

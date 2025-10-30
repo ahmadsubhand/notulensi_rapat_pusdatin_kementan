@@ -1,5 +1,5 @@
 import { Page, Text, View, Document, StyleSheet, Image, Font, Link } from '@react-pdf/renderer';
-import type { notulensiType } from '../../validator/index.validator';
+import type { notulensiType } from '../../validator/notulensi.validator';
 import type { JSONContent } from '@tiptap/react';
 import type { ReactNode } from 'react';
 import dayjs from 'dayjs';

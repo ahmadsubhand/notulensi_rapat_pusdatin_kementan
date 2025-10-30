@@ -9,12 +9,13 @@ import { Input } from "@/components/ui/input";
 import { DatePicker } from "@/components/date-picker";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { defaultValues } from "@/lib/default-values";
-import { STORAGE_KEY } from "@/lib/storage-key";
+import { notulensiRapat } from "@/lib/default-values";
+import { NOTULENSI_KEY } from "@/lib/storage-key";
 import { MoveLeft, RefreshCcw } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import type { notulensiType } from "@/validator/notulensi.validator";
 
-export default function Notulen({ form } : SectionProps) {
+export default function Notulen({ form } : SectionProps<notulensiType>) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null | undefined>(form.watch('tanda_tangan'));
 
@@ -38,8 +39,8 @@ export default function Notulen({ form } : SectionProps) {
   };
 
   const handleClear = () => {
-    localStorage.removeItem(STORAGE_KEY);
-    form.reset(defaultValues);
+    localStorage.removeItem(NOTULENSI_KEY);
+    form.reset(notulensiRapat);
   };
 
   return (

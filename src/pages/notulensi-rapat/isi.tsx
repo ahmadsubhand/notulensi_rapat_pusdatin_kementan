@@ -3,8 +3,9 @@ import type { SectionProps } from "@/types";
 import InputField from "@/components/input-field";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
+import type { notulensiType } from "@/validator/notulensi.validator";
 
-export default function Isi({ form } : SectionProps) {
+export default function Isi({ form } : SectionProps<notulensiType>) {
   return (
     <Card>
       <CardHeader>

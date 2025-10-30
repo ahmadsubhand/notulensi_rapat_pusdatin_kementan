@@ -5,8 +5,9 @@ import { FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/for
 import { useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash } from "lucide-react";
+import type { notulensiType } from "@/validator/notulensi.validator";
 
-export default function Peserta({ form } : SectionProps) {
+export default function Peserta({ form } : SectionProps<notulensiType>) {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'peserta'
