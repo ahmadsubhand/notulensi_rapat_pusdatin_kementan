@@ -106,7 +106,7 @@ export default function Notulen({ form } : SectionProps<notulensiType>) {
         )}
 
       </CardContent>
-      <CardFooter className="gap-4">
+      <CardFooter className="gap-4 flex-col sm:flex-row">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button type={'button'} variant={'outline'}>

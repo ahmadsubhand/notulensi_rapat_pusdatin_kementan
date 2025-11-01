@@ -11,7 +11,10 @@ export const notulensiRapat: notulensiType = {
   notulen: "",
   peserta: [],
   agenda: "",
-  isi: "",
+  isi: {
+    type: 'doc',
+    content: []
+  },
   dokumentasi: [],
   isUseNotulis: false,
   notulis: "",
@@ -21,21 +24,37 @@ export const notulensiRapat: notulensiType = {
 }
 
 export const perjalananDinas: perjalananType = {
-  perihal: '',
+  perihal: {
+    type: 'doc',
+    content: []
+  },
   tanggal: dayjs().format('YYYY-MM-DD'),
-  rangka: '',
+  rangka: {
+    type: 'doc',
+    content: []
+  },
   lokasi: '',
   pelaksana: [],
   suratTugas: '',
   tanggalSurat: '',
   waktuPelaksanaan: '',
   lokasiPerjalanan: '',
-  tujuanPerjalanan: '',
-  latarBelakang: '',
+  tujuanPerjalanan: {
+    type: 'doc',
+    content: []
+  },
+  latarBelakang: {
+    type: 'doc',
+    content: []
+  },
   fasilitator: [],
   kegiatan: [],
-  hasil: '',
+  hasil: {
+    type: 'doc',
+    content: []
+  },
   namaPelapor: '',
   nipPelapor: '',
-  tandaTanganPelapor: ''
+  tandaTanganPelapor: '',
+  dokumentasi: []
 }

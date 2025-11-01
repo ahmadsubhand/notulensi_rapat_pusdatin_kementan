@@ -55,9 +55,14 @@ export const notulensiSchema = z.object({
     .max(1000, 'Agenda terlalu panjang (maks 1000 karakter).'),
 
   isi: z
-    .string()
-    .trim()
-    .nonempty('Isi konten wajib diisi.'),
+    .object({
+      type: z.literal('doc'),
+      content: z.array(z.object({
+        type: z.literal('paragraph'),
+        content: z.array(z.any()).optional()
+      }))
+    })
+    .refine(val => val.content[0].content, 'Isi rapat wajib diisi.'),
 
   dokumentasi: z.array(
     z.object({

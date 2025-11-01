@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react"
+import { EditorContent, EditorContext, useEditor, type JSONContent } from "@tiptap/react"
 
 // --- UI Primitives ---
 import { Button } from "@/components/tiptap-ui-primitive/button"
@@ -49,9 +49,6 @@ import { LinkIcon } from "@/components/tiptap-icons/link-icon"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useWindowSize } from "@/hooks/use-window-size"
 import { useCursorVisibility } from "@/hooks/use-cursor-visibility"
-
-// --- Components ---
-import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle"
 
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
@@ -130,10 +127,6 @@ const MainToolbarContent = ({
       <Spacer />
 
       {isMobile && <ToolbarSeparator />}
-
-      <ToolbarGroup>
-        <ThemeToggle />
-      </ToolbarGroup>
     </>
   )
 }
@@ -168,10 +161,13 @@ const MobileToolbarContent = ({
 )
 
 export function SimpleEditor({
-  content = "", onChange, className = ""
+  content = {
+    type: 'doc',
+    content: []
+  }, onChange, className = ""
 } : {
-  content?: string,
-  onChange: (value: string) => void,
+  content?: JSONContent,
+  onChange?: (value: JSONContent) => void;
   className?: string
 }) {
   const isMobile = useIsMobile()
@@ -196,8 +192,8 @@ export function SimpleEditor({
     extensions: extensionEditor(),
     content,
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML()
-      onChange?.(html)
+      const json = editor.getJSON()
+      onChange?.(json)
     }
   })
 
@@ -243,7 +239,7 @@ export function SimpleEditor({
         <EditorContent
           editor={editor}
           role="presentation"
-          className="simple-editor-content"
+          className="p-4"
         />
       </EditorContext.Provider>
     </div>

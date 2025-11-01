@@ -27,7 +27,7 @@ export default function RichField<T extends FieldValues>({
             control={form.control}
             name={inputName}
             render={({ field }) => (
-            <FormItem className="flex-1 flex flex-col gap-3">
+            <FormItem className="flex-1 flex flex-col gap-2">
                 <FormLabel>{inputLabel} 
                     {isRequired && (
                         <span className='text-red-500'>*</span>

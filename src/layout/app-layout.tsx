@@ -1,19 +1,26 @@
 import AppLogo from "@/components/app-logo";
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
+import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
-import type { ReactNode } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle"
+import { Button } from "@/components/ui/button";
 
-export default function AppLayout({ 
-  children, h1Content 
-} : {
-  children: ReactNode, h1Content: string
-}) {
+export default function AppLayout() {
   const isMobile = useIsMobile();
 
   const menu = [
     { title: 'Notulensi Rapat', href: '/notulensi-rapat' },
     { title: 'Perjalanan Dinas', href: '/perjalanan-dinas' }
-  ]
+  ];
+
+  const h1Content = (() => {
+    if (location.pathname.startsWith('/perjalanan-dinas')) return 'Perjalanan Dinas Pusdatin';
+    if (location.pathname.startsWith('/notulensi-rapat')) return 'Notulensi Rapat Pusdatin';
+    if (location.pathname === '/') return '';
+    return '';
+  })();
+
+  const navigate = useNavigate();
 
   return (
     <div className="w-full">
@@ -23,15 +30,20 @@ export default function AppLayout({
           <NavigationMenuList className="gap-4">
             {menu.map((menu, i) => (
               <NavigationMenuItem key={i}>
-                <NavigationMenuLink href={menu.href}>{menu.title}</NavigationMenuLink>
+                <Button onClick={() => navigate(menu.href)} variant={location.pathname.startsWith(menu.href) ? 'default' : 'ghost'}>{menu.title}</Button>
               </NavigationMenuItem>
             ))}
+            <NavigationMenuItem>
+              {/* <NavigationMenuTrigger asChild> */}
+                <ThemeToggle />
+              {/* </NavigationMenuTrigger> */}
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
       </div>
       <div className="flex flex-col justify-center items-center gap-6">
         <h1 className="font-bold text-xl">{h1Content}</h1>
-        {children}
+        <Outlet />
       </div>
     </div>
   )

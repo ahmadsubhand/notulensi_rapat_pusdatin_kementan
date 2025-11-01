@@ -2,9 +2,14 @@ import { z } from 'zod';
 
 export const perjalananSchema = z.object({
   perihal: z
-    .string('Perihal tidak valid.')
-    .nonempty('Perihal wajib diisi.')
-    .max(255, 'Perihal terlalu panjang (maks 255 karakter).'),
+    .object({
+      type: z.literal('doc'),
+      content: z.array(z.object({
+        type: z.literal('paragraph'),
+        content: z.array(z.any()).optional()
+      }))
+    })
+    .refine(val => val.content[0].content, 'Perihal wajib diisi.'),
   
   tanggal: z
     .string('Tanggal tidak valid.')
@@ -16,9 +21,14 @@ export const perjalananSchema = z.object({
     ),
 
   rangka: z
-    .string('Rangka perjalanan dinas tidak valid.')
-    .nonempty('Rangka perjalanan dinas wajib diisi.')
-    .max(255, 'Rangka perjalanan dinas terlalu panjang (maks 255 karakter).'),
+    .object({
+      type: z.literal('doc'),
+      content: z.array(z.object({
+        type: z.literal('paragraph'),
+        content: z.array(z.any()).optional()
+      }))
+    })
+    .refine(val => val.content[0].content, 'Rangka perjalanan dinas wajib diisi.'),
 
   lokasi: z
     .string('Lokasi tidak valid.')
@@ -37,12 +47,12 @@ export const perjalananSchema = z.object({
     .nonempty('Surat tugas wajib diisi.')
     .max(100, 'Surat tugas terlalu panjang (maks 100 karakter).'),
 
-  tanggalSurat: z.string('Tanggal tidak valid.')
-    .nonempty('Tanggal wajib diisi.')
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Tanggal tidak valid")
+  tanggalSurat: z.string('Tanggal surat tugas tidak valid.')
+    .nonempty('Tanggal surat tugas wajib diisi.')
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Tanggal surat tugas tidak valid")
     .refine(
         (value) => !isNaN(Date.parse(value)),
-        "Tanggal tidak valid"
+        "Tanggal surat tugas tidak valid"
     ),
 
   waktuPelaksanaan: z.string('Waktu pelaksanaan tidak valid.')
@@ -59,16 +69,25 @@ export const perjalananSchema = z.object({
     .max(100, 'Lokasi perjalanan terlalu panjang (maks 100 karakter).'),
 
   tujuanPerjalanan: z
-    .string('Tujuan perjalanan tidak valid.')
-    .nonempty('Tujuan perjalanan wajib diisi.')
-    .max(255, 'Tujuan perjalanan terlalu panjang (maks 255 karakter).'),
+    .object({
+      type: z.literal('doc'),
+      content: z.array(z.object({
+        type: z.literal('paragraph'),
+        content: z.array(z.any()).optional()
+      }))
+    })
+    .refine(val => val.content[0].content, 'Tujuan perjalanan wajib diisi.'),
 
   latarBelakang: z
-    .string('Latar belakang tidak valid.')
-    .trim()
-    .transform((val) => (val === '' ? null : val))
-    .nullable()
-    .optional(),
+    .object({
+      type: z.literal('doc'),
+      content: z.array(z.object({
+        type: z.literal('paragraph'),
+        content: z.array(z.any()).optional()
+      }))
+    })
+    .transform((val) => (val.content[0].content ? val : null))
+    .nullable(),
   
   fasilitator: z.array(
     z.object({
@@ -81,8 +100,7 @@ export const perjalananSchema = z.object({
         .max(255, 'Deskripsi terlalu panjang (maks 255 karakter).'),
     })
   ).transform((val) => val.length > 0 ? val : null)
-  .nullable()
-  .optional(),
+  .nullable(),
 
   kegiatan: z.array(
     z.object({
@@ -92,13 +110,17 @@ export const perjalananSchema = z.object({
         .max(100, 'Bentuk kegiatan terlalu panjang (maks 100 karakter).'),
     })
   ).transform((val) => val.length > 0 ? val : null)
-  .nullable()
-  .optional(),
+  .nullable(),
 
   hasil: z
-    .string('Hasil tidak valid.')
-    .trim()
-    .nonempty('Hasil wajib diisi.'),
+    .object({
+      type: z.literal('doc'),
+      content: z.array(z.object({
+        type: z.literal('paragraph'),
+        content: z.array(z.any()).optional()
+      }))
+    })
+    .refine(val => val.content[0].content, 'Hasil wajib diisi.'),
 
   namaPelapor: z.string('Nama tidak valid.')
     .nonempty('Nama wajib diisi.')
@@ -109,7 +131,18 @@ export const perjalananSchema = z.object({
     .max(100, 'NIP terlalu panjang (maks 100 karakter).'),
 
   tandaTanganPelapor: z
-    .url("Foto tanda tangan pelapor wajib diunggah")
+    .url("Foto tanda tangan pelapor wajib diunggah"),
+
+  dokumentasi: z.array(
+    z.object({
+      url: z.url('Foto dokumentasi wajib diunggah').nonempty('Foto dokumentasi wajib diunggah'),
+      width: z.number('Ukuran lebar foto wajib diisi').positive(),
+      height: z.number('Ukuran tiggi foto wajib diisi').positive(),
+      ratio: z.number().positive(),
+    })
+  ).transform((val) => val.length > 0 ? val : null)
+  .nullable(),
+  
 })
 
 export type perjalananType = z.infer<typeof perjalananSchema>;

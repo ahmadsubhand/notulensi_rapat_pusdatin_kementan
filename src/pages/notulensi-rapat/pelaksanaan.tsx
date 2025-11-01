@@ -3,11 +3,9 @@ import { DatePicker } from "@/components/date-picker";
 import { FieldWrapper } from "@/components/field-wrapper";
 import type { SectionProps } from "@/types";
 import InputField from "@/components/input-field";
-import { useIsMobile } from "@/hooks/use-mobile";
 import type { notulensiType } from "@/validator/notulensi.validator";
 
 export default function Pelaksanaan({ form } : SectionProps<notulensiType>) {
-  const isMobile = useIsMobile();
 
   return (
     <Card>
@@ -23,7 +21,7 @@ export default function Pelaksanaan({ form } : SectionProps<notulensiType>) {
           isRequired
         />
 
-        <FieldWrapper isMobile={isMobile}>
+        <FieldWrapper>
           <InputField
             form={form}
             inputName="waktu_mulai"

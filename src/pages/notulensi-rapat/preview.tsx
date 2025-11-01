@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     paddingLeft: '65px',
     paddingRight: '65px',
     paddingBottom: '50px',
-    // fontFamily: 'Arial'
+    fontFamily: 'Arial'
   },
 
   // Type style
@@ -168,7 +168,7 @@ export default function Preview({
         <Text style={[styles.heading, styles.heading1, styles.textCenter]}>Dokumentasi</Text>
         <View style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap: '12px', alignItems: 'flex-end' }}>
           {data.dokumentasi.map((foto, index) => (
-            <Image key={index} style={{ height: foto.height, width: foto.width, objectFit: 'cover' }} src={foto.url} />
+            <Image key={index} style={{ height: foto.height, width: foto.width, objectFit: 'cover', padding: '1px' }} src={foto.url} />
           ))}
         </View>
       </Page>

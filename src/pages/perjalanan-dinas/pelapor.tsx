@@ -2,34 +2,33 @@ import type { SectionProps } from "@/types";
 import type { perjalananType } from "@/validator/perjalanan.validator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import InputField from "@/components/input-field";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { handleImageUpload } from "@/lib/tiptap-utils";
-
+// import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+// import { Input } from "@/components/ui/input";
+// import { useState } from "react";
+// import { handleImageUpload } from "@/lib/tiptap-utils";
 
 export default function Pelapor({ form } : SectionProps<perjalananType>) {
-  const [uploading, setUploading] = useState(false);
-  const [preview, setPreview] = useState<string | null | undefined>(form.watch('tandaTanganPelapor'));
+  // const [uploading, setUploading] = useState(false);
+  // const [preview, setPreview] = useState<string | null | undefined>(form.watch('tandaTanganPelapor'));
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     
-    const file = e.target.files?.[0];
-    if (!file) return;
+  //   const file = e.target.files?.[0];
+  //   if (!file) return;
     
-    try {
-      setUploading(true);
-      const url = await handleImageUpload(file, ({ progress }) => {
-        console.log(`Progress: ${progress}%`);
-      });
-      form.setValue("tandaTanganPelapor", url, { shouldValidate: true }); // set hasil upload ke form
-      setPreview(url); // tampilkan preview
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setUploading(false);
-    }
-  };
+  //   try {
+  //     setUploading(true);
+  //     const url = await handleImageUpload(file, ({ progress }) => {
+  //       console.log(`Progress: ${progress}%`);
+  //     });
+  //     form.setValue("tandaTanganPelapor", url, { shouldValidate: true }); // set hasil upload ke form
+  //     setPreview(url); // tampilkan preview
+  //   } catch (error) {
+  //     console.error(error);
+  //   } finally {
+  //     setUploading(false);
+  //   }
+  // };
 
   return (
     <Card>
@@ -53,11 +52,11 @@ export default function Pelapor({ form } : SectionProps<perjalananType>) {
           isRequired
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name={"tandaTanganPelapor"}
           render={() => (
-            <FormItem className="flex-1 flex flex-col gap-4">
+            <FormItem className="flex-1 flex flex-col gap-2">
               <FormLabel>Tanda Tangan <span className='text-red-500'>*</span></FormLabel>
               <FormControl>
                 <Input 
@@ -74,8 +73,8 @@ export default function Pelapor({ form } : SectionProps<perjalananType>) {
               <FormMessage />
             </FormItem>
           )}
-        />
-      </CardContent>  
+        /> */}
+      </CardContent>
     </Card>
   )
 }

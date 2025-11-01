@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import InputField from "@/components/input-field";
 import { DatePicker } from "@/components/date-picker";
 import { FieldWrapper } from "@/components/field-wrapper";
+import RichField from "@/components/rich-field";
 
 export default function Detail({ form } : SectionProps<perjalananType>) {
   return (
@@ -46,15 +47,13 @@ export default function Detail({ form } : SectionProps<perjalananType>) {
           isRequired
         />
 
-        <InputField 
+        <RichField 
           form={form}
           inputName={"tujuanPerjalanan"}
           inputLabel={"Tujuan Perjalanan"}
           inputPlaceholder={"Tujuan dilaksakan perjalanan dinas"}
           isRequired
         />
-
-        
       </CardContent>
     </Card>
   )

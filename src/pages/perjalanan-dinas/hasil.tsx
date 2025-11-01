@@ -55,16 +55,16 @@ export default function Hasil({ form } : SectionProps<perjalananType>) {
                   <div className="flex gap-4" key={field.id}>
                     <InputField
                       form={form}
-                      inputName={`pelaksana.${index}.nama`}
+                      inputName={`fasilitator.${index}.nama`}
                       className="w-full"
-                      inputPlaceholder="Nama peserta pelaksana"
+                      inputPlaceholder="Nama"
                       isRequired
                     />
                     <InputField
                       form={form}
-                      inputName={`pelaksana.${index}.nip`}
+                      inputName={`fasilitator.${index}.deskripsi`}
                       className="w-full"
-                      inputPlaceholder="NIP peserta pelaksana"
+                      inputPlaceholder="Deskripsi"
                       isRequired
                     />
                     <Button onClick={() => fasilitatorField.remove(index)} type="button" size={'icon'}>
@@ -113,7 +113,7 @@ export default function Hasil({ form } : SectionProps<perjalananType>) {
         <Button onClick={() => bentukKegiatanField.append({
           value: ''
         })} type="button">
-          Tambah fasilitator/petugas <Plus />
+          Tambah bentuk kegiatan <Plus />
         </Button>
 
         <RichField 

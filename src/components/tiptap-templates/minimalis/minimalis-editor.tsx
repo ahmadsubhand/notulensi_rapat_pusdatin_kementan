@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react"
+import { EditorContent, EditorContext, useEditor, type JSONContent } from "@tiptap/react"
 
 // --- UI Primitives ---
 import { Button } from "@/components/tiptap-ui-primitive/button"
@@ -89,10 +89,13 @@ const MobileToolbarContent = ({
 )
 
 export function MinimalisEditor({
-  content = "", onChange, className = "", placeHolderText = "", isPargraphAllowed = false
+  content = {
+    type: 'doc',
+    content: []
+  }, onChange, className = "", placeHolderText = "", isPargraphAllowed = false
 } : {
-  content?: string,
-  onChange: (value: string) => void,
+  content?: JSONContent,
+  onChange?: (value: JSONContent) => void;
   className?: string,
   placeHolderText?: string,
   isPargraphAllowed?: boolean
@@ -135,8 +138,8 @@ export function MinimalisEditor({
     ],
     content,
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML()
-      onChange?.(html)
+      const json = editor.getJSON()
+      onChange?.(json)
     }
   })
 

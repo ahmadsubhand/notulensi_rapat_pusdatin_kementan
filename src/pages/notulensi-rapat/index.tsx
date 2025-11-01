@@ -13,21 +13,22 @@ import Peserta from "./peserta";
 import Pelaksanaan from "./pelaksanaan";
 import Isi from "./isi";
 import Dokumentasi from "./dokumentasi";
-import Notulen from "./notulen";
+import Notulis from "./notulis";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { notulensiRapat } from "@/lib/default-values";
 import { NOTULENSI_KEY } from "@/lib/storage-key";
-import AppLayout from "@/layout/app-layout";
 
 export default function Notulensi() {
+  
   // Form
-
+  const saved = localStorage.getItem(NOTULENSI_KEY);
+  
   const form = useForm<notulensiType>({
     resolver: zodResolver(notulensiSchema),
     mode: "onChange",
-    defaultValues: notulensiRapat,
+    defaultValues: saved ? JSON.parse(saved) : notulensiRapat,
   });
 
   const onSubmit = (values: notulensiType) => {
@@ -58,20 +59,7 @@ export default function Notulensi() {
 
   // Backup Local Storage
 
-  const { watch, reset } = form;
-
-  useEffect(() => {
-    const savedData = localStorage.getItem(NOTULENSI_KEY);
-    if (savedData) {
-      try {
-        const parsed = JSON.parse(savedData) as notulensiType;
-        reset(parsed);
-        console.log("Form data loaded from localStorage");
-      } catch (err) {
-        console.log("Error parsing saved data: ", err);
-      }
-    }
-  }, [reset])
+  const { watch } = form;
 
   useEffect(() => {
     const subscription = watch((values) => {
@@ -88,7 +76,7 @@ export default function Notulensi() {
     { value: 'peserta', label: 'Peserta', form: <Peserta form={form} /> },
     { value: 'isi', label: 'Isi', form: <Isi form={form} /> },
     { value: 'dokumentasi', label: 'Dokumentasi', form: <Dokumentasi form={form} /> },
-    { value: 'notulis', label: 'Notulis', form: <Notulen form={form} /> },
+    { value: 'notulis', label: 'Notulis', form: <Notulis form={form} /> },
   ];
 
   const [fieldToTab] = useState<Record<keyof notulensiType, string>>({
@@ -139,46 +127,44 @@ export default function Notulensi() {
   // }, [form.formState.errors])
 
   return (
-    <AppLayout h1Content="Notulensi Rapat Pusdatin">
-      <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit, onInvalid)}
-          >
-            <Tabs value={step} onValueChange={setStep} className="flex flex-col gap-4 w-xs sm:min-w-xl overflow-scroll p-2">
-              {isNotMobile ? (
-                <Select
-                  value={step}
-                  onValueChange={setStep}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={'Navigasi'} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Navigasi</SelectLabel>
-                      {menus.map((menu, index) => (
-                        <SelectItem value={menu.value} key={index}>{menu.label}</SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              ) : (
-                <TabsList>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit, onInvalid)}
+      >
+        <Tabs value={step} onValueChange={setStep} className="flex flex-col gap-4 w-xs sm:min-w-xl overflow-scroll p-2">
+          {isNotMobile ? (
+            <Select
+              value={step}
+              onValueChange={setStep}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={'Navigasi'} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Navigasi</SelectLabel>
                   {menus.map((menu, index) => (
-                    <TabsTrigger value={menu.value} key={index}>{menu.label}</TabsTrigger>
+                    <SelectItem value={menu.value} key={index}>{menu.label}</SelectItem>
                   ))}
-                </TabsList>
-              )}
-              
-
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          ) : (
+            <TabsList>
               {menus.map((menu, index) => (
-                <TabsContent value={menu.value} key={index}>
-                  {menu.form}
-                </TabsContent>
+                <TabsTrigger value={menu.value} key={index}>{menu.label}</TabsTrigger>
               ))}
-            </Tabs>
-          </form>
-        </Form>
-    </AppLayout>    
+            </TabsList>
+          )}
+          
+
+          {menus.map((menu, index) => (
+            <TabsContent value={menu.value} key={index}>
+              {menu.form}
+            </TabsContent>
+          ))}
+        </Tabs>
+      </form>
+    </Form>
   )
 }
