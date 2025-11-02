@@ -7,6 +7,9 @@ import { useFieldArray } from "react-hook-form";
 import { FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash } from "lucide-react";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import SortableItem from "@/components/sortable-item";
 
 export default function Hasil({ form } : SectionProps<perjalananType>) {
   const fasilitatorField = useFieldArray({
@@ -50,29 +53,41 @@ export default function Hasil({ form } : SectionProps<perjalananType>) {
           render={() => (
             <FormItem>
               <FormLabel>Daftar Fasilitator/Petugas yang Ditemui</FormLabel>
-              {fasilitatorField.fields.length > 0 &&
-                fasilitatorField.fields.map((field, index) => (
-                  <div className="flex gap-4" key={field.id}>
-                    <InputField
-                      form={form}
-                      inputName={`fasilitator.${index}.nama`}
-                      className="w-full"
-                      inputPlaceholder="Nama"
-                      isRequired
-                    />
-                    <InputField
-                      form={form}
-                      inputName={`fasilitator.${index}.deskripsi`}
-                      className="w-full"
-                      inputPlaceholder="Deskripsi"
-                      isRequired
-                    />
-                    <Button onClick={() => fasilitatorField.remove(index)} type="button" size={'icon'}>
-                      <Trash />
-                    </Button>
-                  </div>
-                ))
-              }
+              <DndContext collisionDetection={closestCenter} onDragEnd={(event) => {
+                const { active, over } = event;
+
+                if (!over) return;
+
+                if (active.id !== over.id) {
+                  const oldIndex = fasilitatorField.fields.findIndex(f => f.id === active.id);
+                  const newIndex = fasilitatorField.fields.findIndex(f => f.id === over.id);
+                  fasilitatorField.move(oldIndex, newIndex);
+                }
+              }}>
+                <SortableContext items={fasilitatorField.fields.map(f => f.id)} strategy={verticalListSortingStrategy}>
+                  {fasilitatorField.fields.map((field, index) => (
+                    <SortableItem key={field.id} id={field.id}>
+                      <InputField
+                        form={form}
+                        inputName={`fasilitator.${index}.nama`}
+                        className="flex-1"
+                        inputPlaceholder="Nama"
+                        isRequired
+                      />
+                      <InputField
+                        form={form}
+                        inputName={`fasilitator.${index}.deskripsi`}
+                        className="flex-1"
+                        inputPlaceholder="Deskripsi"
+                        isRequired
+                      />
+                      <Button onClick={() => fasilitatorField.remove(index)} type="button" size={'icon'}>
+                        <Trash />
+                      </Button>
+                    </SortableItem>
+                  ))}
+                </SortableContext>
+              </DndContext>
               <FormMessage />
             </FormItem>
           )}
@@ -90,22 +105,34 @@ export default function Hasil({ form } : SectionProps<perjalananType>) {
           render={() => (
             <FormItem>
               <FormLabel>Bentuk Kegiatan</FormLabel>
-              {bentukKegiatanField.fields.length > 0 &&
-                bentukKegiatanField.fields.map((field, index) => (
-                  <div className="flex gap-4" key={field.id}>
-                    <InputField
-                      form={form}
-                      inputName={`kegiatan.${index}.value`}
-                      className="w-full"
-                      inputPlaceholder="Bentuk kegiatan"
-                      isRequired
-                    />
-                    <Button onClick={() => bentukKegiatanField.remove(index)} type="button" size={'icon'}>
-                      <Trash />
-                    </Button>
-                  </div>
-                ))
-              }
+              <DndContext collisionDetection={closestCenter} onDragEnd={(event) => {
+                const { active, over } = event;
+
+                if (!over) return;
+
+                if (active.id !== over.id) {
+                  const oldIndex = bentukKegiatanField.fields.findIndex(f => f.id === active.id);
+                  const newIndex = bentukKegiatanField.fields.findIndex(f => f.id === over.id);
+                  bentukKegiatanField.move(oldIndex, newIndex);
+                }
+              }}>
+                <SortableContext items={bentukKegiatanField.fields.map(f => f.id)} strategy={verticalListSortingStrategy}>
+                  {bentukKegiatanField.fields.map((field, index) => (
+                    <SortableItem key={field.id} id={field.id}>
+                      <InputField
+                        form={form}
+                        inputName={`kegiatan.${index}.value`}
+                        className="flex-1"
+                        inputPlaceholder="Bentuk kegiatan"
+                        isRequired
+                      />
+                      <Button onClick={() => bentukKegiatanField.remove(index)} type="button" size={'icon'}>
+                        <Trash />
+                      </Button>
+                    </SortableItem>
+                  ))}
+                </SortableContext>
+              </DndContext>
               <FormMessage />
             </FormItem>
           )}

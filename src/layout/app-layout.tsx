@@ -1,7 +1,7 @@
 import AppLogo from "@/components/app-logo";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle"
 import { Button } from "@/components/ui/button";
 
@@ -25,7 +25,9 @@ export default function AppLayout() {
   return (
     <div className="w-full">
       <div className="flex gap-2 m-6">
-        <AppLogo fullText={true} />
+        <Link to={'/'} className="flex gap-2 w-full">
+          <AppLogo fullText={true} />
+        </Link>
         <NavigationMenu viewport={isMobile}>
           <NavigationMenuList className="gap-4">
             {menu.map((menu, i) => (
@@ -34,9 +36,7 @@ export default function AppLayout() {
               </NavigationMenuItem>
             ))}
             <NavigationMenuItem>
-              {/* <NavigationMenuTrigger asChild> */}
-                <ThemeToggle />
-              {/* </NavigationMenuTrigger> */}
+              <ThemeToggle />
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>

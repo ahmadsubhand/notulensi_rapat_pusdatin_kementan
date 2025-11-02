@@ -112,13 +112,9 @@ export default function Notulensi() {
 
   const isNotMobile = useIsMobile();
 
-  // const isi = form.watch('isi');
+  // const isi = form.watch('peserta');
   // useEffect(() => {
-  //   const editor = new Editor({
-  //     extensions: extensionEditor(),
-  //     content: isi
-  //   })
-  //   console.log(editor.getJSON());
+  //   console.log(isi);
   // }, [isi])
 
   // const dokumentasi = form.watch('dokumentasi');

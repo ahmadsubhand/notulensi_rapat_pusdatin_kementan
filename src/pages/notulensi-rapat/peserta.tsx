@@ -6,9 +6,12 @@ import { useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash } from "lucide-react";
 import type { notulensiType } from "@/validator/notulensi.validator";
+import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import SortableItem from "@/components/sortable-item";
 
 export default function Peserta({ form } : SectionProps<notulensiType>) {
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control: form.control,
     name: 'peserta'
   })
@@ -22,6 +25,18 @@ export default function Peserta({ form } : SectionProps<notulensiType>) {
   const removeRow = (index: number) => {
     remove(index)
   }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over) return;
+
+    if (active.id !== over.id) {
+      const oldIndex = fields.findIndex(f => f.id === active.id);
+      const newIndex = fields.findIndex(f => f.id === over.id);
+      move(oldIndex, newIndex); // fungsi bawaan react-hook-form
+    }
+  };
 
   return (
     <Card>
@@ -44,29 +59,30 @@ export default function Peserta({ form } : SectionProps<notulensiType>) {
           inputPlaceholder="Nama notulen rapat"
           isRequired
         />
+
         <FormField 
           control={form.control} 
           name={'peserta'}
           render={() => (
             <FormItem>
               <FormLabel>Daftar Peserta Rapat <span className='text-red-500'>*</span></FormLabel>
-              {fields.length > 0 ?
-                fields.map((field, index) => (
-                  <div className="flex gap-4" key={field.id}>
-                    <InputField
-                      form={form}
-                      inputName={`peserta.${index}.nama`}
-                      className="w-full"
-                      inputPlaceholder="Contoh: Ketua Kelompok Data Komoditas"
-                    />
-                    <Button onClick={() => removeRow(index)} type="button" size={'icon'}>
-                      <Trash />
-                    </Button>
-                  </div>
-                )) : (
-                  <></>
-                )
-              }
+              <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={fields.map(f => f.id)} strategy={verticalListSortingStrategy}>
+                  {fields.map((field, index) => (
+                    <SortableItem key={field.id} id={field.id}>
+                      <InputField
+                        form={form}
+                        inputName={`peserta.${index}.nama`}
+                        className="flex-1"
+                        inputPlaceholder="Contoh: Ketua Kelompok Data Komoditas"
+                      />
+                      <Button onClick={() => removeRow(index)} type="button" size={'icon'}>
+                        <Trash />
+                      </Button>
+                    </SortableItem>
+                  ))}
+                </SortableContext>
+              </DndContext>
               <FormMessage />
             </FormItem>
           )}

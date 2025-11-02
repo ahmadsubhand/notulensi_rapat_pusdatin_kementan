@@ -13,12 +13,15 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { MoveLeft, RefreshCcw } from "lucide-react";
 import { PERJALANAN_KEY } from "@/lib/storage-key";
 import { perjalananDinas } from "@/lib/default-values";
+import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import SortableItem from "@/components/sortable-item";
 
 export default function Dokumentasi({ form } : SectionProps<perjalananType>) {
-  const { fields, append, remove } = useFieldArray({
-      control: form.control,
-      name: 'dokumentasi'
-    })
+  const { fields, append, remove, move } = useFieldArray({
+    control: form.control,
+    name: 'dokumentasi'
+  })
   
   const addRow = () => {
     append({
@@ -32,6 +35,18 @@ export default function Dokumentasi({ form } : SectionProps<perjalananType>) {
   const removeRow = (index: number) => {
     remove(index)
   }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over) return;
+
+    if (active.id !== over.id) {
+      const oldIndex = fields.findIndex(f => f.id === active.id);
+      const newIndex = fields.findIndex(f => f.id === over.id);
+      move(oldIndex, newIndex); // fungsi bawaan react-hook-form
+    }
+  };
 
   const [uploading, setUploading] = useState(false);
 
@@ -101,81 +116,81 @@ export default function Dokumentasi({ form } : SectionProps<perjalananType>) {
       <CardHeader>
         <CardTitle>Dokumentasi</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-8">
         <FormField 
           control={form.control} 
           name={'dokumentasi'}
           render={() => (
-            <FormItem>
-              {fields.length > 0 ?
-                fields.map((field, index) => (
-                  <div className="flex flex-col sm:flex-row gap-4" key={field.id}>
-                    <FormField
-                      control={form.control}
-                      name={`dokumentasi.${index}.url`}
-                      render={() => (
-                        <FormItem className="w-full">
-                          <FormLabel>Foto Dokumentasi <span className='text-red-500'>*</span></FormLabel>
-                          <FormControl>
-                            <Input 
-                              type={'file'}
-                              accept="image/*"
-                              onChange={(e) => handleFileChange(e, index)}
-                              disabled={uploading}
-                            />
-                          </FormControl>
-                          {uploading && <p>Mengupload...</p>}
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+            <FormItem className="flex flex-col gap-8">
+              <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={fields.map(f => f.id)} strategy={verticalListSortingStrategy}>
+                  {fields.map((field, index) => (
+                    <SortableItem key={field.id} id={field.id} className="flex flex-col sm:flex-row gap-4 items-end">
+                      <FormField
+                        control={form.control}
+                        name={`dokumentasi.${index}.url`}
+                        render={() => (
+                          <FormItem className="flex-1">
+                            <FormLabel>Foto Dokumentasi <span className='text-red-500'>*</span></FormLabel>
+                            <FormControl>
+                              <Input 
+                                type={'file'}
+                                accept="image/*"
+                                onChange={(e) => handleFileChange(e, index)}
+                                disabled={uploading}
+                              />
+                            </FormControl>
+                            {uploading && <p>Mengupload...</p>}
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name={`dokumentasi.${index}.width`}
-                      render={() => (
-                        <FormItem className="w-full">
-                          <FormLabel>Lebar Foto <span className='text-red-500'>*</span></FormLabel>
-                          <FormControl>
-                            <Input 
-                              value={form.watch(`dokumentasi.${index}.width`)}
-                              type={'number'}
-                              onChange={(e) => handleWidthChange(e, index)}
-                              placeholder="Lebar foto"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                      <FormField
+                        control={form.control}
+                        name={`dokumentasi.${index}.width`}
+                        render={() => (
+                          <FormItem className="flex-1">
+                            <FormLabel>Lebar Foto <span className='text-red-500'>*</span></FormLabel>
+                            <FormControl>
+                              <Input 
+                                value={form.watch(`dokumentasi.${index}.width`)}
+                                type={'number'}
+                                onChange={(e) => handleWidthChange(e, index)}
+                                placeholder="Lebar foto"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name={`dokumentasi.${index}.height`}
-                      render={() => (
-                        <FormItem className="w-full">
-                          <FormLabel>Tinggi Foto <span className='text-red-500'>*</span></FormLabel>
-                          <FormControl>
-                            <Input 
-                              type={'number'}
-                              value={form.watch(`dokumentasi.${index}.height`)}
-                              onChange={(e) => handleHeightChange(e, index)}
-                              placeholder="Tinggi foto"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                      <FormField
+                        control={form.control}
+                        name={`dokumentasi.${index}.height`}
+                        render={() => (
+                          <FormItem className="flex-1">
+                            <FormLabel>Tinggi Foto <span className='text-red-500'>*</span></FormLabel>
+                            <FormControl>
+                              <Input 
+                                type={'number'}
+                                value={form.watch(`dokumentasi.${index}.height`)}
+                                onChange={(e) => handleHeightChange(e, index)}
+                                placeholder="Tinggi foto"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                    <Button onClick={() => removeRow(index)} type="button" size={'icon'} className="self-end">
-                      <Trash />
-                    </Button>
-                  </div>
-                )) : (
-                  <></>
-                )
-              }
+                      <Button onClick={() => removeRow(index)} type="button" size={'icon'} className="self-end">
+                        <Trash />
+                      </Button>
+                    </SortableItem>
+                  ))}
+                </SortableContext>
+              </DndContext>
               <FormMessage />
             </FormItem>
           )}
