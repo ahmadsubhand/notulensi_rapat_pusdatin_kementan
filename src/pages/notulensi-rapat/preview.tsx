@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   bullet: {
     width: '4px',
     height: '4px',
-    transform: 'translateY(1px)'
+    transform: 'translateY(4px)'
   },
   bulletLevel1: {
     backgroundColor: 'black',
