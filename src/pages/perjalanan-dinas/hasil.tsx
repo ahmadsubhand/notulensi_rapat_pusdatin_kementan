@@ -4,12 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import InputField from "@/components/input-field";
 import RichField from "@/components/rich-field";
 import { useFieldArray } from "react-hook-form";
-import { FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash } from "lucide-react";
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import SortableItem from "@/components/sortable-item";
+import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 
 export default function Hasil({ form } : SectionProps<perjalananType>) {
   const fasilitatorField = useFieldArray({
@@ -143,13 +144,21 @@ export default function Hasil({ form } : SectionProps<perjalananType>) {
           Tambah bentuk kegiatan <Plus />
         </Button>
 
-        <RichField 
-          form={form}
-          inputName={"hasil"}
-          inputLabel={"Hasil"}
-          inputPlaceholder={"Hasil perjalanan dinas"}
-          isPargraphAllowed
-          isRequired
+        <FormField
+          control={form.control}
+          name={'hasil'}
+          render={({ field }) => (
+            <FormItem className="flex-1 flex flex-col gap-4">
+              <FormLabel>Hasil <span className='text-red-500'>*</span></FormLabel>
+              <FormControl>
+                <SimpleEditor
+                  content={field.value} onChange={field.onChange} 
+                  className="max-h-full overflow-scroll"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
       </CardContent>
     </Card>

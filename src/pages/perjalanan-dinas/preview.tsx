@@ -1,4 +1,4 @@
-import { Page, Text, View, Document, StyleSheet, Image, Font } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Image, Font, render, Link } from '@react-pdf/renderer';
 import type { JSONContent } from '@tiptap/react';
 import type { ReactNode } from 'react';
 import dayjs from 'dayjs';
@@ -66,6 +66,33 @@ const styles = StyleSheet.create({
   textRight: { textAlign: 'right' },
   textCenter: { textAlign: 'center' },
   textJustify: { textAlign: 'justify' },
+
+  // List style
+  list: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  listItem: {
+    display: 'flex',
+    flexDirection: 'row',
+    // gap: '4px'
+  },
+  bullet: {
+    width: '4px',
+    height: '4px',
+    transform: 'translateY(4px)'
+  },
+  bulletLevel1: {
+    backgroundColor: 'black',
+    borderRadius: '100px',
+  },
+  bulletLevel2: {
+    borderRadius: '100px',
+    border: '1px solid black',
+  },
+  bulletLevel3: {
+    backgroundColor: 'black'
+  },
 })
 
 export default function Preview({ 
@@ -160,7 +187,7 @@ export default function Preview({
                 ] : []),
                 {
                   title: 'Hasil',
-                  content: <Text>{renderContent(data.hasil)}</Text>,
+                  content: <View>{renderAdvanceContent(data.hasil)}</View>,
                 }
               ].map((section, index) => (
                 <LayoutHasil
@@ -266,3 +293,124 @@ function renderContent(node: JSONContent): ReactNode {
     })
   }
 }
+
+const renderAdvanceContent = (node: JSONContent, isList=false, level=0, indexNumber=0): ReactNode => {
+  if (!node) return null;
+
+  switch (node.type) {
+    case "paragraph":
+      return (
+        <Text style={[
+          ...(
+            node.attrs?.textAlign === 'center' ? [styles.textCenter] : 
+            node.attrs?.textAlign === 'right' ? [styles.textRight] : 
+            node.attrs?.textAlign === 'justify' ? [styles.textJustify] : 
+            [styles.textLeft]
+          ),
+        ]}>
+          {node.content?.map((item) => (
+            renderAdvanceContent(item, isList)
+          ))}
+        </Text>
+      );
+
+    case "text": {
+      let style = {};
+      if (node.marks) {
+        node.marks.forEach((mark) => {
+          if (mark.type === "bold") style = { ...style, ...styles.bold };
+          if (mark.type === "italic") style = { ...style, ...styles.italic };
+          if (mark.type === "strike") style = { ...style, ...styles.strike };
+          if (mark.type === "underline") style = { ...style, ...styles.underline };
+          // superscript dan subscript belum
+
+          if (mark.type === "link") {
+            return (
+              <Link src={mark.attrs?.href} style={styles.link}>
+                {node.text}
+              </Link>
+            );
+          }
+        });
+      }
+      return <Text style={style}>{node.text}</Text>;
+    }
+
+    case "bulletList":
+      return (
+        <View style={[styles.list, ...(level === 0 ? [{ marginLeft: '16px'}] : [])]}>
+          {node.content?.map((item) => (
+            renderAdvanceContent(item, true, level + 1, 0)
+          ))}
+        </View>
+      );
+
+    case "orderedList":
+      return (
+        <View style={[styles.list, ...(level === 0 ? [{ marginLeft: '16px'}] : [])]}>
+          {node.content?.map((item, index) => (
+            renderAdvanceContent(item, true, level + 1, index + 1)
+          ))}
+        </View>
+      );
+
+    case "listItem":
+      return (
+        <View style={[styles.listItem]} wrap={false}>
+          <View style={{ height: '20px', width: '20px', display: 'flex' }}>
+            {indexNumber > 0 ? (
+              <Text>{getListMarker(level, indexNumber)}</Text>
+            ) : (
+              <View style={[
+                styles.bullet,
+                ...(
+                  level === 1 ? [styles.bulletLevel1] : 
+                  level === 2 ? [styles.bulletLevel2] :
+                  [styles.bulletLevel3]
+                )
+              ]} />
+            )}
+          </View>
+          <View style={[{ display: 'flex', flexDirection: 'column' }]}>
+            {node.content?.map((item) => (
+              renderAdvanceContent(item, true, level)
+            ))}
+          </View>
+        </View>
+      )
+
+    default:
+      return node.content?.map((item) => (
+        renderAdvanceContent(item, true)
+      ))
+  }
+};
+
+// 🔹 Fungsi bantu: mengubah nomor ke format berbeda
+const getListMarker = (level: number, index: number) => {
+  if (level === 1) {
+    return `${index}.`; // angka arab
+  } else if (level === 2) {
+    const alphabet = String.fromCharCode(96 + index); // 1 -> a, 2 -> b
+    return `${alphabet}.`;
+  } else if (level === 3) {
+    const toRoman = (num: number): string => {
+      const romanMap: [number, string][] = [
+        [1000, "m"], [900, "cm"], [500, "d"], [400, "cd"],
+        [100, "c"], [90, "xc"], [50, "l"], [40, "xl"],
+        [10, "x"], [9, "ix"], [5, "v"], [4, "iv"], [1, "i"]
+      ];
+      let result = "";
+      for (const [value, symbol] of romanMap) {
+        while (num >= value) {
+          result += symbol;
+          num -= value;
+        }
+      }
+      return result;
+    };
+    return `${toRoman(index)}.`; // angka romawi kecil
+  } else {
+    return `${index}.`;
+  }
+};
