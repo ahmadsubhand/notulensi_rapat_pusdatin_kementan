@@ -89,7 +89,6 @@ export default function Perjalanan() {
 
     namaPelapor: menus[3].value,
     nipPelapor: menus[3].value,
-    tandaTanganPelapor: menus[3].value,
 
     dokumentasi: menus[4].value
   })

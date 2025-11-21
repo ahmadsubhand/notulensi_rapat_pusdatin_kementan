@@ -130,9 +130,6 @@ export const perjalananSchema = z.object({
     .nonempty('NIP wajib diisi.')
     .max(100, 'NIP terlalu panjang (maks 100 karakter).'),
 
-  tandaTanganPelapor: z
-    .url("Foto tanda tangan pelapor wajib diunggah"),
-
   dokumentasi: z.array(
     z.object({
       url: z.url('Foto dokumentasi wajib diunggah').nonempty('Foto dokumentasi wajib diunggah'),
