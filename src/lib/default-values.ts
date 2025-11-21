@@ -55,6 +55,5 @@ export const perjalananDinas: perjalananType = {
   },
   namaPelapor: '',
   nipPelapor: '',
-  tandaTanganPelapor: '',
   dokumentasi: []
 }
