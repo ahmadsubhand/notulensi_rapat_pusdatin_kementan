@@ -156,9 +156,7 @@ export default function Preview({
                 ...(data.latarBelakang ? [
                   {
                     title: 'Latar Belakang',
-                    content: (
-                      <Text>{renderContent(data.latarBelakang)}</Text>
-                    ),
+                    content: <View>{renderAdvanceContent(data.latarBelakang)}</View>,
                   }
                 ] : []),
                 ...(data.fasilitator ? [

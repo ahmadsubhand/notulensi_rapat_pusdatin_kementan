@@ -82,7 +82,7 @@ export const perjalananSchema = z.object({
     .object({
       type: z.literal('doc'),
       content: z.array(z.object({
-        type: z.literal('paragraph'),
+        type: z.string(),
         content: z.array(z.any()).optional()
       }))
     })

@@ -2,7 +2,6 @@ import type { SectionProps } from "@/types";
 import type { perjalananType } from "@/validator/perjalanan.validator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import InputField from "@/components/input-field";
-import RichField from "@/components/rich-field";
 import { useFieldArray } from "react-hook-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -40,12 +39,21 @@ export default function Hasil({ form } : SectionProps<perjalananType>) {
         <CardTitle>Hasil Perjalanan Dinas</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <RichField 
-          form={form}
-          inputName={"latarBelakang"}
-          inputLabel={"Latar Belakang"}
-          inputPlaceholder={"Latar belakang perjalanan dinas"}
-          isPargraphAllowed
+        <FormField
+          control={form.control}
+          name={'latarBelakang'}
+          render={({ field }) => (
+            <FormItem className="flex-1 flex flex-col gap-4">
+              <FormLabel>Latar Belakang</FormLabel>
+              <FormControl>
+                <SimpleEditor
+                  content={field.value} onChange={field.onChange} 
+                  className="max-h-full overflow-scroll"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
 
         <FormField

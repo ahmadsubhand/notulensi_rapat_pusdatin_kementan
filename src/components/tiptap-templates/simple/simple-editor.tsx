@@ -166,7 +166,7 @@ export function SimpleEditor({
     content: []
   }, onChange, className = ""
 } : {
-  content?: JSONContent,
+  content?: JSONContent | null,
   onChange?: (value: JSONContent) => void;
   className?: string
 }) {
